@@ -1,9 +1,9 @@
 package de.tfr.game
 
 
-import com.soywiz.klock.DateTime
+import com.soywiz.klock.PerformanceCounter
+import com.soywiz.klogger.Logger
 import com.soywiz.korge.view.Graphics
-import com.soywiz.korge.view.Stage
 import com.soywiz.korge.view.View
 import com.soywiz.korim.color.RGBA
 import de.tfr.game.lib.actor.Box2D
@@ -17,7 +17,7 @@ import de.tfr.game.renderer.GameFieldRenderer
 import de.tfr.game.renderer.LogoRenderer
 import de.tfr.game.ui.DEVICE
 
-
+private val log = Logger("HitKlack")
 class HitKlack(val view: View) : ApplicationAdapter() {
 
     data class Resolution(var width: Float, var height: Float) {
@@ -34,13 +34,12 @@ class HitKlack(val view: View) : ApplicationAdapter() {
 
     private val gameField = GameField(10)
     private val resolution = Resolution(800f, 1400f)
-    private lateinit var stage: Stage
     val viewport = Viewport
 
-    var time = 0
+    private var time: Double
 
     init {
-        time = DateTime.now().milliseconds
+        time = PerformanceCounter.microseconds
     }
 
     override suspend fun create() {
@@ -62,14 +61,20 @@ class HitKlack(val view: View) : ApplicationAdapter() {
     }
 
     override suspend fun render(graphics: Graphics) {
-        val deltaTime = time - DateTime.now().milliseconds
-        time = DateTime.now().milliseconds
+        val deltaTime = getDeltaTime()
+        log.debug { "time$deltaTime" }
         clear()
         controllerRenderer.render(controller)
         renderField(graphics)
-        game.update(deltaTime.toDouble())
+        game.update(deltaTime)
         displayRenderer.render(graphics)
         logo.render()
+    }
+
+    private fun getDeltaTime(): Double {
+        val deltaTime = PerformanceCounter.microseconds - time
+        time = PerformanceCounter.microseconds
+        return deltaTime / (1000 * 1000)
     }
 
     private fun renderField(graphics: Graphics) {

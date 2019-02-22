@@ -15,7 +15,9 @@ fun Graphics.path(path: (VectorPath) -> Unit = {}) {
 }
 
 fun Graphics.color(color: RGBA) {
+    this.colorMul = color
     //TODO: implement seeting color
+    //this.endFill()
 }
 
 fun BitmapFont.color(color: RGBA) {
