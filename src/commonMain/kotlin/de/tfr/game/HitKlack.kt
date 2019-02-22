@@ -1,6 +1,7 @@
 package de.tfr.game
 
 
+import com.soywiz.klock.DateTime
 import com.soywiz.korge.view.Graphics
 import com.soywiz.korge.view.Stage
 import com.soywiz.korge.view.View
@@ -36,6 +37,12 @@ class HitKlack(val view: View) : ApplicationAdapter() {
     private lateinit var stage: Stage
     val viewport = Viewport
 
+    var time = 0
+
+    init {
+        time = DateTime.now().milliseconds
+    }
+
     override suspend fun create() {
         game = BoxGame(gameField)
 
@@ -47,18 +54,20 @@ class HitKlack(val view: View) : ApplicationAdapter() {
         controller.addTouchListener(game)
         display = Display(Box2D(center, 280f, 90f))
         displayRenderer = DisplayRenderer(display)
-
-        displayRenderer.init()
+        displayRenderer.create()
         controllerRenderer = ControllerRenderer()
+        controllerRenderer.create()
         logo = LogoRenderer(center, gameFieldSize)
+        logo.create()
     }
 
     override suspend fun render(graphics: Graphics) {
-        val deltaTime = 0.0 //Todo: set deltaTime
+        val deltaTime = time - DateTime.now().milliseconds
+        time = DateTime.now().milliseconds
         clear()
         controllerRenderer.render(controller)
         renderField(graphics)
-        game.update(deltaTime)
+        game.update(deltaTime.toDouble())
         displayRenderer.render(graphics)
         logo.render()
     }

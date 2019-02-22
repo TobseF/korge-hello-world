@@ -8,17 +8,18 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.Rectangle
 import com.soywiz.korma.geom.vector.rect
 import de.tfr.game.Display
+import de.tfr.game.lib.engine.Loadable
 import de.tfr.game.ui.GRAY_DARK
 import de.tfr.game.ui.GREEN_LIGHT
 import de.tfr.game.ui.GREEN_LIGHT2
 import de.tfr.game.util.extensions.color
 
 
-class DisplayRenderer(val display: Display) {
+class DisplayRenderer(val display: Display) : Loadable {
     lateinit var font: BitmapFont
 
 
-    suspend fun init() {
+    override suspend fun create() {
         font = resourcesVfs["fonts/segment7.fnt"].readBitmapFont()
     }
 

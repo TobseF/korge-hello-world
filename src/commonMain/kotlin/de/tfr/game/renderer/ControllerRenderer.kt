@@ -1,14 +1,15 @@
 package de.tfr.game.renderer
 
-import com.soywiz.korim.format.ImageData
-import com.soywiz.korim.format.readImageData
+import com.soywiz.korim.bitmap.Bitmap
+import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.Point
 import de.tfr.game.Controller
 import de.tfr.game.Controller.Control
+import de.tfr.game.lib.engine.Loadable
 
 
-class ControllerRenderer {
+class ControllerRenderer : Loadable {
 
     private lateinit var buttons: SpriteSheet
     private lateinit var red: ButtonTexture
@@ -23,8 +24,8 @@ class ControllerRenderer {
 
     }
 
-    suspend fun init() {
-        val texture = resourcesVfs["buttons.png"].readImageData()
+    override suspend fun create() {
+        val texture = resourcesVfs["buttons.png"].readBitmap()
 
         buttons = SpriteSheet(texture, width, width, 2, 4)
         green = ButtonTexture(buttons[0], buttons[1])
@@ -54,7 +55,7 @@ class ControllerRenderer {
 
     }
 
-    class SpriteSheet(val texture: ImageData,
+    class SpriteSheet(val texture: Bitmap,
             val width: Int,
             val height: Int,
             val horizontalCount: Int,
@@ -77,4 +78,4 @@ class ControllerRenderer {
     }
 }
 
-class TextureRegion(texture: ImageData, i: Int, i1: Int, width: Int, height: Int)
+class TextureRegion(texture: Bitmap, i: Int, i1: Int, width: Int, height: Int)
