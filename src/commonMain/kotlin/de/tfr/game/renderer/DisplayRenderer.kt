@@ -1,19 +1,23 @@
 package de.tfr.game.renderer
 
+import com.soywiz.klogger.Logger
 import com.soywiz.korge.view.Graphics
+import com.soywiz.korge.view.Text
+import com.soywiz.korge.view.setText
 import com.soywiz.korge.view.text
 import com.soywiz.korim.font.BitmapFont
 import com.soywiz.korim.font.readBitmapFont
 import com.soywiz.korio.file.std.resourcesVfs
-import com.soywiz.korma.geom.Rectangle
-import com.soywiz.korma.geom.vector.rect
+import com.soywiz.korma.geom.Matrix
 import de.tfr.game.Display
 import de.tfr.game.lib.engine.Loadable
 import de.tfr.game.ui.GRAY_DARK
 import de.tfr.game.ui.GREEN_LIGHT
 import de.tfr.game.ui.GREEN_LIGHT2
-import de.tfr.game.util.extensions.color
+import de.tfr.game.util.extensions.startFill
 
+
+private val log = Logger("DisplayRenderer")
 
 class DisplayRenderer(val display: Display) : Loadable {
     lateinit var font: BitmapFont
@@ -23,44 +27,41 @@ class DisplayRenderer(val display: Display) : Loadable {
         font = resourcesVfs["fonts/segment7.fnt"].readBitmapFont()
     }
 
+    var text: Text? = null
+
+    fun Graphics.text(text: String, x: Number, y: Number): Text {
+        return text(text, 120.0, font = font) {
+            setTransform(Matrix.Transform(x, y))
+        }
+    }
+
+    var init = false
     fun render(renderer: Graphics) {
+        if (!init) {
+            init = true
+            renderer.startFill(GREEN_LIGHT)
 
-        renderer.color(GREEN_LIGHT)
+            //renderer.rect(display.x - display.width / 2, display.y - 510, display.width, display.height)
+            renderer.endFill()
 
-        renderer.rect(display.x - display.width / 2, display.y - 510, display.width, display.height)
+            renderer.text("88:88", font = font)
+            renderer.endFill()
+            font.startFill(GRAY_DARK)
 
-        renderer.text("88:88", font = font)
-        font.color(GRAY_DARK)
+            val width = display.width// font.base * 5
+            val height = display.height//font.lineHeight
 
-        val height = font.lineHeight
-        val with = font.base * 5
+            //renderer.text("88:88", display.x - display.width / 2, display.y - 510)
+            renderer.endFill()
+            font.startFill(GREEN_LIGHT2)
 
-        renderer.text("88:88", font = font) {
-            setTextBounds(Rectangle(display.x - (font.base / 2.0),
-                    display.y - 370 - font.lineHeight / 2.0,
-                    with,
-                    height))
+            text = renderer.text(display.getText(), display.x - display.width / 2, display.y - 510)
+            renderer.endFill()
+        } else {
+            val newTime = display.getText()
+            log.info { newTime }
+            text?.setText(newTime)
         }
-        font.color(GREEN_LIGHT2)
-
-        renderer.text(display.getText(), font = font) {
-            setTextBounds(Rectangle(display.x - (font.base / 2.0),
-                    display.y - 370 - font.lineHeight / 2.0,
-                    with,
-                    height))
-        }
-
-
-        /*
-
-         renderer.color = GREEN_LIGHT2
-          renderer.setAutoShapeType(true)
-          renderer.begin()
-          renderer.set(ShapeRenderer.ShapeType.Filled)
-          renderer.rect(display.x, display.y, display.width, display.height)
-          renderer.end()
-          batch.end()
-          */
     }
 
 

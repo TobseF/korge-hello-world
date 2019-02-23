@@ -14,7 +14,7 @@ import de.tfr.game.ui.BLACK
 import de.tfr.game.ui.GRAY_DARK
 import de.tfr.game.ui.GREEN_LIGHT
 import de.tfr.game.ui.GREEN_LIGHT2
-import de.tfr.game.util.extensions.color
+import de.tfr.game.util.extensions.startFill
 import de.tfr.game.util.extensions.triangle
 
 
@@ -30,17 +30,18 @@ class GameFieldRenderer(point: Point) : Point by point {
     fun render(field: GameField, renderer: Graphics) {
         this.renderer = renderer
         renderBackground(field, renderer)
-        renderer.color(GREEN_LIGHT2)
+        renderer.startFill(GREEN_LIGHT2)
         renderer.circle(x, y, radius)
+        renderer.endFill()
 
         field.forEach(this::renderRing)
     }
 
     private fun renderBackground(field: GameField, renderer: Graphics) {
-        renderer.color(GREEN_LIGHT)
+        renderer.startFill(GREEN_LIGHT)
         val radius = getFieldSize(field)
         renderer.rect(x - radius, y - radius, radius * 2, radius * 2)
-
+        renderer.endFill()
     }
 
     fun getFieldSize(field: GameField): Double = (blockWith / 2.0) + field.size * (gap + blockWith)
@@ -58,7 +59,7 @@ class GameFieldRenderer(point: Point) : Point by point {
     }
 
     fun renderTouchArea(touchAreas: List<Shape2d.Rectangle>) {
-        renderer.color(Colors.NAVY)
+        renderer.startFill(Colors.NAVY)
 
         touchAreas.forEach {
             val center = it.center()
@@ -85,9 +86,9 @@ class GameFieldRenderer(point: Point) : Point by point {
         val side = length / 2
         val width = blockWith / 2
         when {
-            stone == null -> renderer.color(GREEN_LIGHT2)
-            stone.state == Stone.State.Active -> renderer.color(BLACK)
-            stone.state == Stone.State.Set -> renderer.color(GRAY_DARK)
+            stone == null -> renderer.startFill(GREEN_LIGHT2)
+            stone.state == Stone.State.Active -> renderer.startFill(BLACK)
+            stone.state == Stone.State.Set -> renderer.startFill(GRAY_DARK)
         }
 
         when (block.orientation) {
@@ -149,6 +150,7 @@ class GameFieldRenderer(point: Point) : Point by point {
             }
 
         }
+        renderer.endFill()
     }
 
 }

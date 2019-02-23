@@ -4,9 +4,8 @@ import com.soywiz.korma.geom.Point
 
 
 object Viewport {
-    fun unproject(point: Point) {
+    fun unproject(point: Point) = point
 
-    }
     fun update(width: Int, height: Int, b: Boolean) {
 
     }

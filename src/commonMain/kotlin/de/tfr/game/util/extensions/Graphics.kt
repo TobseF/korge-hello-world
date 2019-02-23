@@ -3,6 +3,7 @@ package de.tfr.game.util.extensions
 import com.soywiz.korge.view.Graphics
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.font.BitmapFont
+import com.soywiz.korim.vector.Context2d
 import com.soywiz.korma.geom.vector.VectorPath
 import com.soywiz.korma.geom.vector.circle
 
@@ -14,13 +15,12 @@ fun Graphics.path(path: (VectorPath) -> Unit = {}) {
     this.shape(VectorPath().apply(path))
 }
 
-fun Graphics.color(color: RGBA) {
-    this.colorMul = color
-    //TODO: implement seeting color
-    //this.endFill()
+
+fun Graphics.startFill(color: RGBA) {
+    this.beginFill(Context2d.Color(color))
 }
 
-fun BitmapFont.color(color: RGBA) {
+fun BitmapFont.startFill(color: RGBA) {
     //TODO: implement seeting color
 }
 
